@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container2 pt-0">
+  <!-- Хлебные крошки -->
+  {% if product.category %}
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        {% with category=product.category %}
+          {% if category.parent %}
+            {% if category.parent.parent %}
+              <li class="breadcrumb-item">{{ category.parent.parent.name }}</li>
+            {% endif %}
+            <li class="breadcrumb-item">{{ category.parent.name }}</li>
+          {% endif %}
+          <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+        {% endwith %}
+      </ol>
+    </nav>
+  {% endif %}
+
+  <!-- Карточка товара -->
+  <div class="row">
+    <!-- Левая колонка с изображением -->
+    <div class="col-md-6">
+      <img src="{{ product.image.url }}" alt="{{ product.title }}" class="img-fluid rounded border shadow-sm">
+    </div>
+
+    <!-- Правая колонка с характеристиками -->
+    <div class="col-md-6">
+      <h1 class="mb-3">{{ product.title }}</h1>
+
+      <table class="table table-bordered table-striped">
+        <tbody>
+          {% if product.brand %}
+          <tr>
+            <th scope="row" style="width: 30%;">Бренд</th>
+            <td>{{ product.brand }}</td>
+          </tr>
+          {% endif %}
+
+          {% if product.article %}
+          <tr>
+            <th scope="row">Артикул</th>
+            <td>{{ product.article }}</td>
+          </tr>
+          {% endif %}
+
+          {% if product.category %}
+          <tr>
+            <th scope="row">Категория</th>
+            <td>{{ product.category.name }}</td>
+          </tr>
+          {% endif %}
+
+          <tr>
+            <th scope="row">Цена</th>
+            <td><strong class="text-danger">{{ product.price }} лей</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    <a href="{% url 'add' product.id %}">
+      <button class="btn btn-danger btn-lg mt-4">Добавить в корзину</button>
+    </a>
+
+    </div>
+  </div>
+</div> <!-- Закрытие .row -->
+
+{% if product.description %}
+  <div class="mt-4">
+    <h4>Описание</h4>
+    <div id="description" class="desc-short">
+      {{ product.description|linebreaks }}
+    </div>
+    <button id="toggleDesc" class="desc-toggle-link mt-2 text-decoration-none">
+      Читать далее
+    </button>
+  </div>
+{% endif %}
+
+<h3 class="mt-5">С этим часто покупают</h3>
+<div class="cards-wrapper d-flex flex-wrap gap-3 mt-3">
+  {% for rec in recommended_products %}
+    <div class="card small-card" style="width: 12rem;">
+      <a href="{% url 'product_detail' rec.id %}">
+        <img src="{{ rec.image.url }}" class="card-img-top" alt="{{ rec.title }}">
+      </a>
+      <div class="card-body">
+        <h6 class="card-title">{{ rec.title|truncatechars:40 }}</h6>
+        {% if product.article %}
+            <p class="card-article" style="font-size: 0.9em; color: #666;">{{ product.article }}</p>
+        {% endif %}
+        <p class="text-danger">{{ rec.price }} лей</p>
+      </div>
+    </div>
+  {% empty %}
+    <p>Похожие товары не найдены.</p>
+  {% endfor %}
+</div>
+    <style>
+
+  .table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  .desc-short {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.3s ease;
+              }
+
+              .desc-short::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    background: linear-gradient(transparent, white);
+  }
+
+/* Описание товара (свёрнутое) */
+.desc-short {
+  max-height: 100px;
+  overflow: hidden;
+  position: relative;
+  transition: max-height 0.3s ease;
+}
+.desc-short::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 40px;
+  width: 100%;
+  background: linear-gradient(transparent, #fff);
+}
+
+/* Кнопка "Читать далее" */
+.desc-toggle-link {
+  background: none;
+  border: none;
+  color: #CC0A0A;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+.desc-toggle-link:hover {
+  text-decoration: none;
+}
+
+/* Таблица характеристик */
+.table th, .table td {
+  vertical-align: middle;
+}
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 500;
+  width: 30%;
+}
+
+/* Карточки рекомендаций */
+.cards-wrapper {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.small-card {
+  width: 150px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+.small-card:hover {
+  transform: scale(1.02);
+}
+.small-card img {
+  height: 120px;
+  width: 100%;
+  object-fit: cover;
+}
+.small-card .card-body {
+  padding: 0.5rem;
+  text-align: center;
+}
+.small-card .card-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+
+        @media (max-width: 768px) {
+  .cards-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .small-card {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .table {
+    font-size: 0.9rem;
+  }
+
+  .desc-toggle-link {
+    font-size: 1rem;
+  }
+}
+</style>
+<!-- Скрытие/раскрытие описания -->
+<script>
+  const btn = document.getElementById("toggleDesc");
+  const desc = document.getElementById("description");
+
+  btn.addEventListener("click", () => {
+    const expanded = desc.classList.toggle("desc-short");
+    btn.classList.toggle("expanded");
+
+    btn.innerHTML = expanded
+      ? 'Читать далее <i class="bi bi-chevron-down"></i>'
+      : 'Свернуть <i class="bi bi-chevron-up"></i>';
+  });
+</script>
+
+
+{% endblock %}

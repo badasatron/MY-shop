@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="d-flex justify-content-center my-0">Ваша корзина сформирована</h1>
+<div class="cart-card-wrapper">
+	{% for product in order_items %}
+	<div class="cart-card">
+		<img src="{{ product.prodcut.image.url }}" alt="" class="cart-img">
+		<div class="card-body">
+			<h3 class="cart-title">{{ product.prodcut.title }}</h3>
+			<p class="cart-text">{{ product.prodcut.price }} лей × {{ product.quantity }}</p>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+<hr>
+<h3 class="text-center mt-4">
+	Итого: {{ total_price|intcomma }} лей
+</h3>
+{% endblock %}

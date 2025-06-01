@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% load humanize %}
+
+<h1 class="d-flex justify-content-center my-0">Корзина</h1>
+<div class="cart-card-wrapper">
+	{% for product in items %}
+	<div class="cart-card">
+		<img src="{{ product.prodcut.image.url }}" class="cart-img" alt="...">
+		<div class="card-body">
+			<h3 class="cart-title">{{ product.prodcut.title }}</h3>
+			<p class="cart-text">{{ product.prodcut.price }} лей</p>
+		</div>
+		<div class="cart-counter">
+			<div class="border border-danger border-6 rounded-pill bg-light p-2">
+				<a href="{% url 'decrease' basket.id product.prodcut.id %}"><button>-</button></a>
+				{{ product.quantity }}
+				<a href="{% url 'increase' basket.id product.prodcut.id %}"><button>+</button></a>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+{% if items.count > 0 %}
+	<hr>
+
+	<button class="catalog-nav cb_btn mb-5 underline-animation shadow-sm p-3">
+        <h3 class="text-center">
+		    Итого: <strong>{{ total_price|intcomma }}</strong> лей
+		<a href="{% url 'checkout' %}">сформировать заказ</a>
+    	</h3>
+    </button>
+{% else %}
+	<h1 class="d-flex justify-content-center my-4"><b>ваша корзина пуста</b></h1>
+{% endif %}
+{% endblock %}

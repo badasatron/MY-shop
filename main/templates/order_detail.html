@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+
+<h2 class="text-center"><mark>О заказе №{{ order.id }}</mark></h2>
+
+<h3 class="text-center "><mark>Итого: <strong>{{ order.get_total|intcomma }}</strong> лей</mark></h3>
+<p class="text-center"><mark>Статус: <strong>{{ order.get_status_display }}</strong></mark></p>
+
+<div class="cart-card-wrapper">
+	{% for product in order_objects %}
+	<div class="cart-card">
+		<img src="{{ product.prodcut.image.url }}" alt="" class="cart-img">
+		<div class="card-body">
+			<h3 class="cart-title">{{ product.prodcut.title }}</h3>
+			<p class="cart-text">{{ product.prodcut.price }} лей</p>
+			<p class="cart-text">кол-во: {{ product.quantity }}</p>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+<hr>
+<h3 class="text-center mt-4 catalog-nav ">Итого: {{ order.get_total|intcomma }} лей</h3>
+{% endblock %}

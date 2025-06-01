@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+<h2 class="my-4 text-center">{{ category.name }}</h2>
+
+<div class="cards-wrapper">
+  {% for product in products %}
+
+    <div class="card">
+      <a href="{% url 'product_detail' product.id %}">
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" onerror="this.onerror=null; this.src='/photos/placeholder.png';">
+      </a>
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="{% url 'product_detail' product.id %}" style="color: inherit; text-decoration: none;">
+            {{ product.title }}
+          </a>
+        </h5>
+        {% if product.article %}
+            <p class="card-article" style="font-size: 0.9em; color: #666;">Артикул: {{ product.article }}</p>
+        {% endif %}
+        <div class="card-bottom">
+          <a href="{% url 'add' product.id %}" class="cb_btn btn-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="red" class="bi bi-bag-fill" viewBox="0 0 16 16">
+              <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
+            </svg>
+          </a>
+          <div class="cb_btn">
+            <p class="card-text">{{ product.price }} лей</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% empty %}
+    <p>В этой категории пока нет товаров.</p>
+  {% endfor %}
+</div>
+<   nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    {% if category.parent %}
+      {% if category.parent.parent %}
+        <li class="breadcrumb-item">
+          <a href="{% url 'products_by_category' category.parent.parent.id %}">{{ category.parent.parent.name }}</a>
+        </li>
+      {% endif %}
+      <li class="breadcrumb-item">
+        <a href="{% url 'products_by_category' category.parent.id %}">{{ category.parent.name }}</a>
+      </li>
+    {% endif %}
+    <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+  </ol>
+</nav>
+{% endblock %}

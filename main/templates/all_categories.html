@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="my-4 text-center">Все категории</h2>
+
+<div class="container">
+  <div class="row">
+    {% for category in categories %}
+      {% if not category.parent %}
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="p-3 border rounded shadow-sm h-100 bg-light">
+            <h5 class="mb-3">
+              <a href="{% url 'products_by_category' category.id %}" class="text-decoration-none animated-link-move underline-animation">
+                {{ category.name }}
+              </a>
+            </h5>
+              {% if category.children.all %}
+              <ul class="ps-3">
+                {% for child in category.children.all %}
+                  <li class="mb-1">
+                    <a href="{% url 'products_by_category' child.id %}" class="text-decoration-none animated-link-move underline-animation">
+                      {{ child.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">Нет подкатегорий</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
